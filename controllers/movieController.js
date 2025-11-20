@@ -29,6 +29,16 @@ export function saveMovies(req,res){
 
     movie.save()
 
-    
+    .then(()=>{
+        res.json({
+            message:"Product added successfully"
+        })
+    })
+    .catch((err)=>{
+         res.status(500).json({
+        message: "Error adding product",
+        error: err.message
+    });
+    })
 
 }
