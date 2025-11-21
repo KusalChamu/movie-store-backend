@@ -92,3 +92,37 @@ export async function updateMovies(req,res) {
     }
 }
 
+export async function getMovieById(req,res){
+    const movieId = req.params.movieId
+
+    try{
+        const movie = await Movie.findOne({
+            movieId:movieId
+        })
+        if(movie==null){
+             res.status(404).json({
+                message:"Movie not found"
+            })
+            return
+        }
+        if(movie.isAvailable){
+            res.json(movie)
+        }else{
+            if(!isAdmin(req)){
+                res.status(403).json({
+                    message:"Unauthorized you need to be an admin to view this movie"
+                })
+                return
+            }
+            else{
+                res.json(movie)
+            }
+        }
+    }
+    catch(err) {
+        res.status(500).json({
+            message: "Error fetching movie",
+            error: err.message
+        });
+    }
+}
