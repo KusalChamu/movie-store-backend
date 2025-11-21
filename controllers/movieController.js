@@ -13,7 +13,7 @@ export async function getMovie(req,res){
         }
     }catch(err){
         res.json({
-            message:"Error fetching products"
+            message:"Error fetching movies"
         })
     }
 }
@@ -22,7 +22,7 @@ export function saveMovies(req,res){
     if(!isAdmin(req)){
         
         return res.status(403).json({
-            message:"Unauthorized you need to be an admin to create a product"
+            message:"Unauthorized you need to be an admin to create a movie"
         })
     }
 
@@ -37,7 +37,7 @@ export function saveMovies(req,res){
     })
     .catch((err)=>{
          res.status(500).json({
-        message: "Error adding product",
+        message: "Error adding movie",
         error: err.message
     });
     })
@@ -46,7 +46,7 @@ export function saveMovies(req,res){
 export async function deleteMovies(req,res) {
     if(!isAdmin(req)){
         res.status(403).json({
-            message:"Unauthorized you need to be an admin to update a product"
+            message:"Unauthorized you need to be an admin to update a movie"
         })
         return
     }
@@ -59,9 +59,70 @@ export async function deleteMovies(req,res) {
         })
     }catch(err) {
         res.status(500).json({
-            message: "Error deleting product",
+            message: "Error deleting movie",
             error: err.message
         });
     }
 }
 
+export async function updateMovies(req,res) {
+    if(!isAdmin(req)){
+        res.status(403).json({
+            message:"Unauthorized you need to be an admin to update a movie"
+        })
+        return
+    }
+    const movieId = req.params.movieId
+    const updatingData = req.body
+
+    try{
+        await Movie.updateOne(
+            {movieId:movieId},
+            updatingData
+        )
+        res.json({
+            message:"product updated successfully"
+        })
+    }
+    catch{
+        res.status(500).json({
+            message: "Error updating product",
+            error: err.message
+        }); 
+    }
+}
+
+export async function getMovieById(req,res){
+    const movieId = req.params.movieId
+
+    try{
+        const movie = await Movie.findOne({
+            movieId:movieId
+        })
+        if(movie==null){
+             res.status(404).json({
+                message:"Movie not found"
+            })
+            return
+        }
+        if(movie.isAvailable){
+            res.json(movie)
+        }else{
+            if(!isAdmin(req)){
+                res.status(403).json({
+                    message:"Unauthorized you need to be an admin to view this movie"
+                })
+                return
+            }
+            else{
+                res.json(movie)
+            }
+        }
+    }
+    catch(err) {
+        res.status(500).json({
+            message: "Error fetching movie",
+            error: err.message
+        });
+    }
+}
