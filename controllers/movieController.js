@@ -1,4 +1,5 @@
 import Movie from "../models/movie";
+import { isAdmin } from "./userController";
 
 export async function getMovie(req,res){
     try{
@@ -63,3 +64,4 @@ export async function deleteMovies(req,res) {
         });
     }
 }
+
