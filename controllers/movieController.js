@@ -40,5 +40,26 @@ export function saveMovies(req,res){
         error: err.message
     });
     })
+}
 
+export async function deleteMovies(req,res) {
+    if(!isAdmin(req)){
+        res.status(403).json({
+            message:"Unauthorized you need to be an admin to update a product"
+        })
+        return
+    }
+
+    try{
+        await Movie.deleteOne({movieId:req.params.movieId})
+
+        res.json({
+            message:"Product deleted successfully"
+        })
+    }catch(err) {
+        res.status(500).json({
+            message: "Error deleting product",
+            error: err.message
+        });
+    }
 }
