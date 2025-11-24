@@ -1,3 +1,4 @@
+
 import User from '../models/user.js';
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
@@ -54,6 +55,20 @@ user.save()
                 error: err.message
             });
         });
+
+export function createUser(req,res){
+    const role = req.body.role || "customer"
+
+    if(role === "admin"){
+        if(!req.user || req.user.role !=="admin"){
+            return res.status(403).json({
+                message: "Unauthorized: only admins can create another admin"
+            });
+        }
+    }
+
+    
+
 }
 
 export function loginUser(req,res) {
