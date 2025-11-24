@@ -9,6 +9,7 @@ export function createUser(req,res) {
     const role = req.body.role || "customer" ;
 
     if (role === "admin") {
+        //check if user logged in (OR) request's user role is admin 
         if(!req.user || req.user.role !== "admin" ){
             return res.status(403).json({
                 message: "Unauthorized: only admins can create another admin"
