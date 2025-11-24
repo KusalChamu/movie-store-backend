@@ -55,6 +55,7 @@ user.save()
                 error: err.message
             });
         });
+    }
 
 export function createUser(req,res){
     const role = req.body.role || "customer"
